@@ -1,0 +1,20 @@
+Protein Accession,Protein Name,Gen,Organism (Scientific),Organism (Common),Molecular Weight,Ensembl Gene ID,Description,Seq Region Name
+P38398,Breast cancer type 1 susceptibility protein,BRCA1,Homo sapiens,Human,207721,ENSG00000012048,BRCA1 DNA repair associated [Source:HGNC Symbol;Acc:HGNC:1100],17
+Q9H2X6,Homeodomain-interacting protein kinase 2,HIPK2,Homo sapiens,Human,130966,ENSG00000064393,homeodomain interacting protein kinase 2 [Source:HGNC Symbol;Acc:HGNC:14402],7
+P07900,Heat shock protein HSP 90-alpha,HSP90AA1,Homo sapiens,Human,84660,ENSG00000080824,heat shock protein 90 alpha family class A member 1 [Source:HGNC Symbol;Acc:HGNC:5253],14
+Q07812,Apoptosis regulator BAX,BAX,Homo sapiens,Human,21184,ENSG00000087088,"BCL2 associated X, apoptosis regulator [Source:HGNC Symbol;Acc:HGNC:959]",19
+P25963,NF-kappa-B inhibitor alpha,NFKBIA,Homo sapiens,Human,35609,ENSG00000100906,NFKB inhibitor alpha [Source:HGNC Symbol;Acc:HGNC:7797],14
+P24385,G1/S-specific cyclin-D1,CCND1,Homo sapiens,Human,33729,ENSG00000110092,cyclin D1 [Source:HGNC Symbol;Acc:HGNC:1582],11
+Q16539,Mitogen-activated protein kinase 14,MAPK14,Homo sapiens,Human,41293,ENSG00000112062,mitogen-activated protein kinase 14 [Source:HGNC Symbol;Acc:HGNC:6876],6
+P24941,Cyclin-dependent kinase 2,CDK2,Homo sapiens,Human,33930,ENSG00000123374,cyclin dependent kinase 2 [Source:HGNC Symbol;Acc:HGNC:1771],12
+P01116,GTPase KRas,KRAS,Homo sapiens,Human,21656,ENSG00000133703,"KRAS proto-oncogene, GTPase [Source:HGNC Symbol;Acc:HGNC:6407]",12
+P01106,Myc proto-oncogene protein,MYC,Homo sapiens,Human,50565,ENSG00000136997,"MYC proto-oncogene, bHLH transcription factor [Source:HGNC Symbol;Acc:HGNC:7553]",8
+P04637,Cellular tumor antigen p53,TP53,Homo sapiens,Human,43653,ENSG00000141510,tumor protein p53 [Source:HGNC Symbol;Acc:HGNC:11998],17
+P31749,RAC-alpha serine/threonine-protein kinase,AKT1,Homo sapiens,Human,55686,ENSG00000142208,AKT serine/threonine kinase 1 [Source:HGNC Symbol;Acc:HGNC:391],14
+P00533,Epidermal growth factor receptor,EGFR,Homo sapiens,Human,134277,ENSG00000146648,epidermal growth factor receptor [Source:HGNC Symbol;Acc:HGNC:3236],7
+P15056,Serine/threonine-protein kinase B-raf,BRAF,Homo sapiens,Human,84437,ENSG00000157764,"B-Raf proto-oncogene, serine/threonine kinase [Source:HGNC Symbol;Acc:HGNC:1097]",7
+P10415,Apoptosis regulator Bcl-2,BCL2,Homo sapiens,Human,26266,ENSG00000171791,BCL2 apoptosis regulator [Source:HGNC Symbol;Acc:HGNC:990],18
+P01112,GTPase HRas,HRAS,Homo sapiens,Human,21298,ENSG00000174775,"HRas proto-oncogene, GTPase [Source:HGNC Symbol;Acc:HGNC:5173]",11
+P08473,Neprilysin,MME,Homo sapiens,Human,85514,ENSG00000196549,membrane metalloendopeptidase [Source:HGNC Symbol;Acc:HGNC:7154],3
+P38936,Cyclin-dependent kinase inhibitor 1,CDKN1A,Homo sapiens,Human,18119,ENSG00000205643,cysteine rich DPF motif domain containing 1 [Source:HGNC Symbol;Acc:HGNC:33710],22
+Q9Y6K9,NF-kappa-B essential modulator,IKBKG,Homo sapiens,Human,48198,ENSG00000269335,inhibitor of nuclear factor kappa B kinase regulatory subunit gamma [Source:HGNC Symbol;Acc:HGNC:5961],X
