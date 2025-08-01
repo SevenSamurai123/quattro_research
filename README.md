@@ -103,7 +103,7 @@ Organism name is a dictionary, access via keys organism -> name -> position 0 in
 
 Molecular weight, is not direct accessible. Got to sequence -> mass. 
 
-Returns a dataframe with _[number of UniPort IDs x 6 columns]_
+Return a dataframe with _[number of UniProt IDs x 6 columns]_
 
 #### get_ensembl_gene_ids() 
 Return the following informations about a UniProt ID by using Ensembl:
@@ -123,7 +123,7 @@ Return the following informations about a UniProt ID:
 
 Take the result dataframe with new Ensembl ID column of _get_ensembl_gene_ids()_. 
 
-Find description and sequence region name of a gene by fetching the rest.ensembl.org with an given ensembl id.
+Find description and sequence region name of a gene by fetching the rest.ensembl.org with a given ensembl id.
 ```python
 base_url = "https://rest.ensembl.org"
 lookup_ext = "/lookup/id/"
