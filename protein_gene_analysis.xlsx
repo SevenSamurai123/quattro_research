@@ -1,0 +1,5 @@
+Protein Accession,Protein Name,Gen,Organism (Scientific),Organism (Common),Molecular Weight,Ensembl Gene ID,Description,Seq Region Name
+Q9Y261,Hepatocyte nuclear factor 3-beta,FOXA2,Homo sapiens,Human,48306,ENSG00000125798,forkhead box A2 [Source:HGNC Symbol;Acc:HGNC:5022],20
+O00255,Menin,MEN1,Homo sapiens,Human,67497,ENSG00000133895,menin 1 [Source:HGNC Symbol;Acc:HGNC:7010],11
+Q8N726,Tumor suppressor ARF,CDKN2A,Homo sapiens,Human,13903,ENSG00000147889,cyclin dependent kinase inhibitor 2A [Source:HGNC Symbol;Acc:HGNC:1787],9
+P69905,Hemoglobin subunit alpha,HBA1,Homo sapiens,Human,15258,ENSG00000188536,hemoglobin subunit alpha 2 [Source:HGNC Symbol;Acc:HGNC:4824],16
