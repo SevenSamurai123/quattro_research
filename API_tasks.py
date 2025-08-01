@@ -87,13 +87,11 @@ class Protein_informations():
             if data == None: continue
 
             accession_number = data.get("accession")
-            print(type(accession_number))
             if accession_number == None:
                 logging.warning(f"Uniprot: No accession number for uniprot id: {id}.")
                 continue
                 
             gene_info = data.get("gene", [])
-            print(type(gene_info))
             if gene_info:
                 gene_name = gene_info[0].get("name", {}).get("value")
             else:
@@ -101,7 +99,6 @@ class Protein_informations():
                 continue
                 
             protein_info = data.get("protein", {}).get("recommendedName", {})
-            print(type(protein_info))
             if protein_info:
                 protein_name = protein_info.get("fullName", {}).get("value")
             else:
@@ -109,7 +106,6 @@ class Protein_informations():
                 continue
 
             organism_info = data.get("organism", {})
-            print(type(organism_info))
             if organism_info:
                 scientific_name = organism_info["names"][0]["value"]
                 common_name = organism_info["names"][1]["value"]
