@@ -49,7 +49,9 @@ df_proteins.saveto_xlsx(df)
 ```
 
 ### Command line
+```Powershell
 _python API_tasks.py "Q8N726,O00255,P69905,Q9Y261"_
+```
 
 _Param 1_ is a list of UniProt IDs 
 
