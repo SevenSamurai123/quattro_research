@@ -2,6 +2,7 @@ import logging
 import pandas as pd
 import requests
 import time
+import sys
 
 class Protein_informations():
 
@@ -56,7 +57,6 @@ class Protein_informations():
                 return data
             case _:
                 logging.warning(f"Error by calling uniprot id: {id} or gene {gene}: HTTP {response.status_code}")
-
 
     def get_uniprot(self, uniprot_ids: list):
         """Collect informations about a uniprot id.
@@ -128,8 +128,6 @@ class Protein_informations():
 
         return df
 
-
-
     def get_ensembl_gene_ids(self, df_proteins):
         """Get ensembl gene id of a specific gene.
         Returns input dataframe with new column Ensembl Gene ID.
@@ -153,8 +151,6 @@ class Protein_informations():
         df_proteins["Ensembl Gene ID"] = ensembl_ids
 
         return df_proteins
-
-
 
     def get_gene_data(self, ensembl_gene_ids: list):
         """Get additional gene data. Collect gene description and sequence region name.
@@ -200,7 +196,6 @@ class Protein_informations():
                 logging.warning(f"Ensembl: Error by Ensembl Gene ID: {id}. No Seq Region Name found. HTTP {response.status_code}")
                 continue
     
-
         df["Ensembl Gene ID"] = ensembl_gene_ids
         df["Description"] = descriptions
         df["Seq Region Name"] = seq_region_name
@@ -212,7 +207,7 @@ class Protein_informations():
         df.to_csv(path, index=False, header=header)
 
     def start(self):
-
+        logging.info(f"Start program")
         uniprot_dataframe = self.get_uniprot(self.uniprot_ids)
 
         ensembl_dataframe = self.get_ensembl_gene_ids(uniprot_dataframe)
@@ -223,7 +218,23 @@ class Protein_informations():
 
         #merge dataframes
         self.final_result = pd.merge(ensembl_dataframe,gene_data_dataframe, on='Ensembl Gene ID', how='outer')
+
+        self.saveto_xlsx(self.final_result)
         
         return self.final_result
  
+
+if __name__ == "__main__":
+    if len(sys.argv) > 2:
+        print("Usage: python API_tasks.py <Q8N726,O00255,P69905,Q9Y261>")
+        sys.exit(1)
+
+    param1 = sys.argv[1]
+    uniprot_ids = param1.strip("[]").split(",")
+
+    from API_tasks import Protein_informations
+    df_proteins = Protein_informations(uniprot_ids=uniprot_ids)
+    df = df_proteins.start()
+    print(df)
+    logging.info(f"End program")
         
