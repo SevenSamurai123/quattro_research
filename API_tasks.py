@@ -202,7 +202,7 @@ class Protein_informations():
 
         return df
 
-    def saveto_xlsx(self,df,header=True,path="protein_gene_analysis.xlsx"):
+    def save_to_xlsx(self,df,header=True,path="protein_gene_analysis.xlsx"):
         logging.info(f"Saved as protein_gene_analysis.xlsx")
         df.to_csv(path, index=False, header=header)
 
@@ -219,7 +219,7 @@ class Protein_informations():
         #merge dataframes
         self.final_result = pd.merge(ensembl_dataframe,gene_data_dataframe, on='Ensembl Gene ID', how='outer')
 
-        self.saveto_xlsx(self.final_result)
+        self.save_to_xlsx(self.final_result)
         
         logging.info(f"End program")
         return self.final_result
