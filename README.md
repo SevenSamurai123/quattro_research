@@ -19,7 +19,10 @@ The return value is a pandas dataframe of size: _[number of UniProt IDs rows x 9
 ### Installation 
 Use the virtuel environment called virtuelenv to get all neccessary packages.
 
+Poetry is also available als dependency controle.
+
 ### Usage
+### In python scripts
 Import Protein_inforation class.
 ```python
 from API_tasks import Protein_informations
@@ -45,7 +48,14 @@ Save dataframe to .xlsx.
 df_proteins.saveto_xlsx(df)
 ```
 
+### Command line
+```Powershell
+python API_tasks.py "Q8N726,O00255,P69905,Q9Y261"
+```
 
+_Param 1_ is a list of UniProt IDs 
+
+### Output
 | Protein Accession | Protein Name                   | Gen     | Organism (Scientific) | Organism (Common) | Molecular Weight | Ensembl Gene ID     | Description                                                    | Seq Region Name |
 |-------------------|--------------------------------|---------|------------------------|--------------------|-------------------|----------------------|----------------------------------------------------------------|-----------------|
 | Q9Y261            | Hepatocyte nuclear factor 3-beta | FOXA2   | Homo sapiens           | Human              | 48306             | ENSG00000125798      | forkhead box A2 [Source:HGNC Symbol;Acc:HGNC:5...]             | 20              |
