@@ -221,6 +221,7 @@ class Protein_informations():
 
         self.saveto_xlsx(self.final_result)
         
+        logging.info(f"End program")
         return self.final_result
  
 
