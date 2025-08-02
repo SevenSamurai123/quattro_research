@@ -25,7 +25,7 @@ Poetry is also available als dependency controle.
 ### In python scripts
 Import Protein_inforation class.
 ```python
-from API_tasks import Protein_informations
+from API_tasks_2 import Protein_informations
 ```
 
 Define UniProt Ids as list.
@@ -43,17 +43,18 @@ Start information gaining and return result dataframe.
 df = df_proteins.start();
 ```
 
-Save dataframe to .xlsx.
+Save dataframe to .xlsx by using utils helper function.
 ```python
-df_proteins.saveto_xlsx(df)
+Utils.save_to_xlsx(df)
 ```
 
 ### Command line
 ```Powershell
-python API_tasks.py "Q8N726,O00255,P69905,Q9Y261"
+python API_tasks_2.py "Q8N726,O00255,P69905,Q9Y261"
+python API_tasks_2.py "pathToFile.txt"
 ```
 
-_Param 1_ is a list of UniProt IDs 
+The file should contain only one UniProt ID per row. No header.
 
 ### Output
 | Protein Accession | Protein Name                   | Gen     | Organism (Scientific) | Organism (Common) | Molecular Weight | Ensembl Gene ID     | Description                                                    | Seq Region Name |
@@ -90,8 +91,8 @@ Not every UniProt ID corresponds to a gene.
 #### Return not valid UniProt IDs
 This functions retruns all UniProt IDs with either no valid ID or missing Ensembl Gene ID oder gene name.
 ```python
-    def not_valid_ids():
-        return not_valid_uniprot_ids
+def not_valid_ids():
+    return not_valid_uniprot_ids
 ```
 
 ### NaN values
@@ -100,10 +101,13 @@ Mandatory variables such as UniProt ID, species scientific name and gene name mu
 Not necessary variables such as protein name, organism common name, molecular weight, description and sequence region name are presented by "empty", if no information is available.
 
 
-### Detailed informations of functions of class Protein_information
-#### fetch_data() 
+
+### Fetch website data 
+The class Fetch_websites accesses the website and collects the information.
+
+It distinguishes between UniProt and Enesmble.
 ```python
-def fetch_data(self, id=None, species=None, gene=None)
+Fetch_websites.fetch_data(case="ensembl",id=id,species=species,gene=gene)
 ```
 Access to websites of UniProt (https://www.ebi.ac.uk/proteins/api/proteins/id) and Ensembl (https://rest.ensembl.org/xrefs/symbol/{species}/{gene}).
 
@@ -115,7 +119,7 @@ Handle request limit of APIs by waiting 3s if limit is reached.
 
 Use _json_ packages to handle the website output.
 
-
+### Detailed informations of functions of class Protein_information
 #### get_uniprot() 
 ```python
 def get_uniprot(self, uniprot_ids: list)
@@ -160,9 +164,9 @@ Take the result dataframe with new Ensembl ID column of _get_ensembl_gene_ids()_
 
 Find description and sequence region name of a gene by fetching the rest.ensembl.org with a given ensembl id.
 ```python
-base_url = "https://rest.ensembl.org"
+BASE_URL = "https://rest.ensembl.org"
 lookup_ext = "/lookup/id/"
-f"{base_url}{lookup_ext}{id}?content-type=application/json"
+f"{BASE_URL}{lookup_ext}{id}?content-type=application/json"
 ```
 Description and Sequence region name are easy accessible via .get().
 
