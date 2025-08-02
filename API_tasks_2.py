@@ -4,11 +4,24 @@ import requests
 import time
 import sys
 
-from API_tasks import Protein_informations
+
 from Protein import Protein
+from Fetch_websites import Fetch_websites
+from Utils import Utils
+
+# Logging configuration
+logging.basicConfig(
+    level=logging.INFO,
+    format="%(asctime)s [%(levelname)s] %(message)s",
+    handlers=[
+        logging.FileHandler("protein_API_Tasks.log"),
+        logging.StreamHandler()
+    ]
+)
 
 dictionary_of_proteins = {}
 list_of_all_uniprot_ids = []
+not_valid_uniprot_ids = []
 
 class Protein_informations():
 
@@ -17,56 +30,6 @@ class Protein_informations():
 
         self.final_result = pd.DataFrame
 
-    # Logging configuration
-    logging.basicConfig(
-        level=logging.INFO,
-        format="%(asctime)s [%(levelname)s] %(message)s",
-        handlers=[
-            logging.FileHandler("protein_API_Tasks.log"),
-            logging.StreamHandler()
-        ]
-    )
-
-    def fetch_data(self, case,id=None, species=None, gene=None):
-        """ Fetch the data from uniprot and ensebl.
-
-        id -- uniprot id, only for uniprot
-        species -- species name organism (scientific), only for ensembl
-        gene -- gene name, only for ensembl
-        """
-
-        if case == "uniprot":
-            base_url = 'https://www.ebi.ac.uk/proteins/api/proteins/'
-            url = base_url + id
-        elif case == "ensembl":
-            url = f'https://rest.ensembl.org/xrefs/symbol/{species}/{gene}'
-        else:
-            logging.error(f"Missing parameter(s) for data fetching.")
-
-        headers = {
-        "Accept": "application/json"
-        }
-        
-        response = requests.get(url, headers=headers)
-        match response.status_code:
-            case 429:
-                logging.warning(f"Reached limit of requests per second. Wait 3 seconds.")
-                time.sleep(3)
-                response = requests.get(url, headers=headers)
-                data = response.json()
-                return data
-            case 400:
-                logging.warning(f"Error by calling uniprot id: {id} or gene {gene}: HTTP {response.status_code}")
-                return None
-            case 404:
-                logging.warning(f"Uniprot id: {id} or gene {gene} is not valid: HTTP {response.status_code}")
-                return None
-            case 200:
-                data = response.json()
-                return data
-            case _:
-                logging.warning(f"Error by calling uniprot id: {id} or gene {gene}: HTTP {response.status_code}")
-                return None
 
     def get_uniprot(self, uniprot_ids: list):
         """Collect informations about a uniprot id.
@@ -97,45 +60,46 @@ class Protein_informations():
 
             logging.info(f"Handle UniProt ID: {id}")
 
-            data = self.fetch_data(case="uniprot",id=id)
+            data = Fetch_websites.fetch_data(case="uniprot",id=id)
             if data == None: continue
-
-            # accession_number = data.get("accession")
-            # if accession_number == None:
-            #     logging.warning(f"Uniprot: No accession number for uniprot id: {id}.")
-            #     continue
-                
+              
             gene_info = data.get("gene", [])
             try:
                 gene_name = gene_info[0].get("name", {}).get("value")
             except:
-                logging.warning(f"Uniprot: No gene name for uniprot id: {id}")
+                logging.warning(f"UniProt ID: {id}. No gene name found.")
+                not_valid_uniprot_ids.append(id)
                 continue
                 
             protein_info = data.get("protein", {}).get("recommendedName", {})
             try:
                 protein_name = protein_info.get("fullName", {}).get("value")
             except:
-                logging.warning(f"Uniprot: No protein name for uniprot id: {id}.")
+                logging.info(f"UniProt ID: {id}. No protein name found.")
+                protein_name = "empty"
                 continue
 
             organism_info = data.get("organism", {})
             try:
                 scientific_name = organism_info["names"][0]["value"]
             except:
-                logging.warning(f"Uniprot: No organism name scientific for uniprot id: {id}.")
+                logging.info(f"UniProt ID: {id}. No organism name scientific found.")
                 continue
             
             try:
                  common_name = organism_info["names"][1]["value"]
             except:
-                logging.warning(f"Uniprot: No organism name common for uniprot id: {id}.")
+                logging.info(f"UniProt ID: {id}. No organism name common found.")
                 common_name = "empty"
                 continue
            
-
-            molecular_weight = data.get("sequence", {}).get("mass", "N/A")
-
+            try:
+                molecular_weight = data.get("sequence", {}).get("mass", "N/A")
+            except:
+                logging.info(f"Uniprot: No molecular weight uniprot id: {id}.")
+                molecular_weight = "empty"
+                continue
+            
             new_protein = Protein(accession_number=id)
             new_protein.set_protein_name(protein_name)
             new_protein.set_gen(gene_name)
@@ -144,8 +108,6 @@ class Protein_informations():
             new_protein.set_mol_weight(molecular_weight)
             
             dictionary_of_proteins[id] = new_protein
-
-            #print(id)
 
             new_entry = {
                 "Protein Accession": id,
@@ -159,7 +121,6 @@ class Protein_informations():
             df.loc[len(df)] = new_entry
 
             list_of_all_uniprot_ids.append(id)
-        print(df.shape)
 
         return df
 
@@ -177,7 +138,7 @@ class Protein_informations():
             gene = row["Gen"]
             id = row["Protein Accession"]
         
-            data = self.fetch_data(case="ensembl",id=id,species=species,gene=gene)
+            data = Fetch_websites.fetch_data(case="ensembl",id=id,species=species,gene=gene)
             if data == None:
                 continue
 
@@ -188,20 +149,17 @@ class Protein_informations():
                 current_protein.set_ensembl_gene_id(gene_id)
                 dataframe_ensembl_gene_id[id]=gene_id
             except:
-                logging.warning(f"Ensembl: No ensembl gene id found for species: {species}, gene: {gene}")
+                logging.warning(f"Ensembl: No Ensembl Gene ID found for {species, gene}. UniProt ID: {id}.")
+                not_valid_uniprot_ids.append(id)
                 continue
         
-        print(len(dataframe_ensembl_gene_id))
-
-        logging.info(f"start dataframe merge")
+        #logging.info(f"start dataframe merge")
         tmp_df = pd.DataFrame(dataframe_ensembl_gene_id.items(), columns=['Protein Accession','Ensembl Gene ID'])
-        print(tmp_df.columns)
-        print(tmp_df.shape)
-        df_valid_proteins = pd.merge(df_proteins,tmp_df, on='Protein Accession', how='inner')
-        logging.info(f"end dataframe merge")
 
-        print(df_valid_proteins.columns)
-        print(df_valid_proteins.shape)
+        df_valid_proteins = pd.merge(df_proteins,tmp_df, on='Protein Accession', how='inner')
+        #logging.info(f"end dataframe merge")
+
+
         return df_valid_proteins
 
     def get_gene_data(self, df_proteins):
@@ -222,44 +180,45 @@ class Protein_informations():
         "Content-Type": "application/json",
         "Accept": "application/json"
         }
+
         ensembl_gene_ids = []
         descriptions = []
         seq_region_names = []
 
-        base_url = "https://rest.ensembl.org"
-        lookup_ext = "/lookup/id/"
+        BASE_URL_ENSEMBL = "https://rest.ensembl.org"
+        LOOKUP_TEXT = "/lookup/id/"
 
         for index, row in df_proteins.iterrows():
             ensembl_gene_id = row["Ensembl Gene ID"]
-            accession_number = row["Protein Accession"]
+            id = row["Protein Accession"]
 
             ensembl_gene_ids.append(ensembl_gene_id)
             
-            url = f"{base_url}{lookup_ext}{ensembl_gene_id}?content-type=application/json"
+            url = f"{BASE_URL_ENSEMBL}{LOOKUP_TEXT}{ensembl_gene_id}?content-type=application/json"
             response = requests.get(url, headers=ensembl_headers)
             if response.status_code != 200:
-                logging.warning(f"Ensembl: Error by Ensembl Gene ID: {ensembl_gene_id}: HTTP {response.status_code}")
+                logging.warning(f"Ensembl: Ensembl Gene ID is not valid: {ensembl_gene_id}. UniProt ID: {id}: HTTP {response.status_code}")
                 continue
 
-            info = response.json()
+            data = response.json()
             try:
-                description = info.get("description", "")
+                description = data.get("description", "")
                 
             except:
-                logging.warning(f"Ensmbl: No description uniprot id: {accession_number}.")
+                logging.info(f"Ensembl: No description for UniProt ID: {id}. Ensembl ID: {ensembl_gene_id}.")
                 description = "empty"
 
             descriptions.append(description)
             
             try:
-                seq_region_name = info.get("seq_region_name", "")
+                seq_region_name = data.get("seq_region_name", "")
             except:
-                logging.warning(f"Ensmbl: No Sequence Region Name uniprot id: {accession_number}.")
+                logging.info(f"Ensembl: No sequence region name for UniProt ID: {id}. Ensembl ID: {ensembl_gene_id}.")
                 seq_region_name = "empty"
             
             seq_region_names.append(seq_region_name)
             
-            current_protein = dictionary_of_proteins[accession_number]
+            current_protein = dictionary_of_proteins[id]
             current_protein.set_description(description)
             current_protein.set_seq_reg_name(seq_region_name)
 
@@ -269,18 +228,21 @@ class Protein_informations():
 
         return df
 
-    def save_to_xlsx(self,df,header=True,path="protein_gene_analysis.xlsx"):
-        logging.info(f"Saved as protein_gene_analysis.xlsx")
-        df.to_csv(path, index=False, header=header)
-
     def get_dictionary_of_proteins():
         return dictionary_of_proteins
+    
+    def not_valid_ids():
+        logging.info(f"Not valid UniProt IDs:")
+        return not_valid_uniprot_ids
 
     def start(self):
         logging.info(f"Start program")
         uniprot_dataframe = self.get_uniprot(self.uniprot_ids)
-        #print(uniprot_dataframe)
 
+        #check if dataframe has at least one entry
+        if uniprot_dataframe.size == 0:
+            return None
+        
         ensembl_dataframe = self.get_ensembl_gene_ids(uniprot_dataframe)
         #print(ensembl_dataframe)
 
@@ -290,7 +252,7 @@ class Protein_informations():
         #merge dataframes
         self.final_result = pd.merge(ensembl_dataframe,gene_data_dataframe, on='Ensembl Gene ID', how='outer')
 
-        self.save_to_xlsx(self.final_result)
+        Utils.save_to_xlsx(self.final_result)
         
         logging.info(f"End program")
         return self.final_result
@@ -311,6 +273,4 @@ if __name__ == "__main__":
     df_proteins = Protein_informations(uniprot_ids=uniprot_ids)
     df = df_proteins.start()
     print(df)
-
-    logging.info(f"End program")
         
