@@ -1,4 +1,7 @@
 
+import logging
+
+
 class Utils():
 
     def print_dictionary(dictionary_of_proteins):
@@ -15,3 +18,8 @@ class Utils():
         print(protein.get_ensembl_gene_id())
         print(protein.get_description())
         print(protein.get_seq_reg_name())
+
+    def save_to_xlsx(df,header=True,path="protein_gene_analysis.xlsx"):
+        logging.info(f"Saved as protein_gene_analysis.xlsx")
+        df.to_csv(path, index=False, header=header)
+
